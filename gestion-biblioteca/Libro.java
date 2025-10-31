@@ -28,19 +28,19 @@ public class Libro {
     }
 
     public String getTitulo() {
-        return titulo;
+        return this.titulo;
     }
 
     public int getEdicion() {
-        return edicion;
+        return this.edicion;
     }
 
     public String getEditorial() {
-        return editorial;
+        return this.editorial;
     }
 
     public int getAnio() {
-        return anio;
+        return this.anio;
     }
 
     public boolean prestado() {
