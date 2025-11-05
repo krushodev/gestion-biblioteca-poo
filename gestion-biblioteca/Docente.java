@@ -1,33 +1,47 @@
+import java.util.Calendar;
 
-/**
- * Write a description of class Docente here.
- *
- * @author (your name)
- * @version (a version number or a date)
- */
-public class Docente
-{
-    // instance variables - replace the example below with your own
-    private int x;
+public class Docente extends Socio {
+    private String area;
 
-    /**
-     * Constructor for objects of class Docente
-     */
-    public Docente()
-    {
-        // initialise instance variables
-        x = 0;
+    public Docente(int p_dniSocio, String p_nombre, String p_area) {
+        super(p_dniSocio, p_nombre, 5);
+        this.setArea(p_area);
     }
 
-    /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
-     */
-    public int sampleMethod(int y)
-    {
-        // put your code here
-        return x + y;
+    private void setArea(String p_area) {
+        this.area = p_area;
+    }
+
+    public String getArea() {
+        return this.area;
+    }
+
+    public boolean puedePedir() {
+        return super.puedePedir();
+    }
+
+    public boolean esResponsable() {
+        Calendar fechaHoy = Calendar.getInstance();
+        for (Prestamo unPrestamo : this.getPrestamos()) {
+            if (unPrestamo.getFechaDevolucion() == null) {
+                if (unPrestamo.vencido(fechaHoy)) {
+                    return false;
+                }
+            } else {
+                if (unPrestamo.vencido(unPrestamo.getFechaDevolucion())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public void cambiarDiasDePrestamo(int p_dias) {
+        int totalDias = p_dias + this.getDiasPrestamo();
+        this.setDiasPrestamo(totalDias);
+    }
+
+    public String soyDeLaClase() {
+        return "Docente";
     }
 }

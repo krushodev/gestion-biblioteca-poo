@@ -1,30 +1,24 @@
+public class Estudiante extends Socio {
+    private String carrera;
 
-/**
- * Write a description of class Estudiante here.
- *
- * @author (your name)
- * @version (a version number or a date)
- */
-public class Estudiante {
-    // instance variables - replace the example below with your own
-    private int x;
-
-    /**
-     * Constructor for objects of class Estudiante
-     */
-    public Estudiante() {
-        // initialise instance variables
-        x = 0;
+    public Estudiante(int p_dniSocio, String p_nombre, String p_carrera) {
+        super(p_dniSocio, p_nombre, 20);
+        this.setCarrera(p_carrera);
     }
 
-    /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param y a sample parameter for a method
-     * @return the sum of x and y
-     */
-    public int sampleMethod(int y) {
-        // put your code here
-        return x + y;
+    private void setCarrera(String p_carrera) {
+        this.carrera = p_carrera;
+    }
+
+    public String getCarrera() {
+        return this.carrera;
+    }
+
+    public String soyDeLaClase() {
+        return "Estudiante";
+    }
+
+    public boolean puedePedir() {
+        return super.puedePedir() && this.cantLibrosPrestados() < 3;
     }
 }

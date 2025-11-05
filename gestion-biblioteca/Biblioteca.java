@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Calendar;
 
 public class Biblioteca {
@@ -64,7 +65,6 @@ public class Biblioteca {
     }
 
     public void nuevoSocioEstudiante(int p_dniSocio, String p_nombre, String p_carrera) {
-
         Estudiante nuevoEstudiante = new Estudiante(p_dniSocio, p_nombre, p_carrera);
         this.agregarSocio(nuevoEstudiante);
     }
@@ -75,20 +75,28 @@ public class Biblioteca {
     }
 
     public boolean prestarLibro(Calendar p_fechaRetiro, Socio p_socio,
-  Libro p_libro){
-      boolean prestar=false;
-      if(p_socio.puedePedir(){
-          Prestamo nuevoPrestamo = new Prestamo(p_fechaRetiro,p_socio, p_libro);
-          p_libro.agregarPrestamo(nuevoPrestamo);
-          p_socio.agregarPrestamo(nuevoPrestamo);
-          prestar= true
-      }
-      return prestar;
-      }
+            Libro p_libro) {
+        boolean prestar = false;
+        if (p_socio.puedePedir() && !p_libro.prestado()) {
+            Prestamo nuevoPrestamo = new Prestamo(p_fechaRetiro, p_socio, p_libro);
+            p_libro.agregarPrestamo(nuevoPrestamo);
+            p_socio.agregarPrestamo(nuevoPrestamo);
+            prestar = true;
+        }
+        return prestar;
 
-    public void devolverLibro(Libro p_libro) {
-        Calendar hoy = Calendar.getInstance();
-        p_libro.getPrestamo().registrarFechaDevolucion(hoy);
+    }
+
+    public void devolverLibro(Libro p_libro) throws LibroNoPrestadoException {
+        if (!p_libro.prestado()) {
+            throw new LibroNoPrestadoException("El libro se encuentra en la biblioteca");
+        }
+
+        Calendar fechaHoy = Calendar.getInstance();
+        Prestamo ultimoPrestamo = p_libro.ultimoPrestamo();
+        if (ultimoPrestamo != null) {
+            ultimoPrestamo.registrarFechaDevolucion(fechaHoy);
+        }
     }
 
     public int cantidadDeSociosPorTipo(String p_objeto) {
@@ -107,7 +115,7 @@ public class Biblioteca {
         Calendar fechaHoy = Calendar.getInstance();
         for (Libro unLibro : this.getLibros()) {
             for (Prestamo unPrestamo : unLibro.getPrestamos()) {
-                if (unPrestamo.estaVencido(fechaHoy)) {
+                if (unPrestamo.vencido(fechaHoy) && unPrestamo.getFechaDevolucion() == null) {
                     vencidos.add(unPrestamo);
                 }
             }
@@ -118,82 +126,108 @@ public class Biblioteca {
     public ArrayList<Docente> docentesResponsables() {
         ArrayList<Docente> docentesResponsables = new ArrayList<Docente>();
         for (Socio unSocio : this.getSocios()) {
-            if (unSocio.soyDeLaClase().equalsIgnoreCase("Docente") && unSocio.esResponsable()) {
-                docentesResponsables.add((Docente) unSocio);
+            if (unSocio instanceof Docente) {
+                if (((Docente) unSocio).esResponsable()) {
+                    docentesResponsables.add((Docente) unSocio);
+                }
             }
         }
         return docentesResponsables;
     }
 
-    public String quienTieneElLibro(Libro p_libro) {
+    public String quienTieneElLibro(Libro p_libro) throws LibroNoPrestadoException {
         if (p_libro.prestado()) {
             Socio socioConElLibro = p_libro.ultimoPrestamo().getSocio();
-            return ("El libro " + p_libro.getTitulo() + " lo tiene el socio " + socioConElLibro.getNombre());
+            StringBuilder sb = new StringBuilder();
+            sb.append(socioConElLibro.getNombre());
+            return sb.toString();
         } else {
             throw new LibroNoPrestadoException("El libro se encuentra en la biblioteca");
         }
     }
 
     public String listaDeSocios() {
-        StringBuilder lista = new StringBuilder();
-        int contador = 1;
-        for (Socio unSocio : this.getSocios()) {
-            lista.append(contador)
-                    .append(") D.N.I.: ")
-                    .append(unSocio.getDNI())
-                    .append(" || ")
-                    .append(unSocio.getNombre())
-                    .append(" (")
-                    .append(unSocio.soyDeLaClase())
-                    .append(") || Libros Prestados: ")
-                    .append(unSocio.getPrestamos().size())
-                    .append("\n"); // Salto de línea entre socios
-
-            contador++;
+        if (this.getSocios().isEmpty()) {
+            return "No hay socios registrados.";
         }
-        return lista.toString();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Lista de Socios:\n");
+        int i = 1;
+        for (Socio unSocio : this.getSocios()) {
+            sb.append(i++).append(") ").append(unSocio.toString()).append("\n");
+        }
+
+        sb.append("**************************************\n");
+        sb.append("Cantidad de Socios del tipo Estudiante: ")
+                .append(cantidadDeSociosPorTipo("Estudiante")).append("\n");
+        sb.append("Cantidad de Socios del tipo Docente: ")
+                .append(cantidadDeSociosPorTipo("Docente")).append("\n");
+        sb.append("**************************************");
+
+        return sb.toString();
     }
 
-    /*
-     * public Socio buscarSocio(int p_dni) {
-     * Socio socioBuscado = null;
-     * 
-     * for (Socio socio : this.getSocios()) {
-     * if (socio.getDni() == p_dni) {
-     * socioBuscado = socio;
-     * break;
-     * }
-     * }
-     * return socioBuscado;
-     * 
-     * }
-     */
+    public Socio buscarSocio(int p_dni) {
+        for (Socio unSocio : this.getSocios()) {
+            if (unSocio.getDniSocio() == p_dni) {
+                return unSocio;
+            }
+        }
+        return null;
+    }
 
     public String listaDeTitulos() {
-        String listaDeTitulos = "";
-
-        for (Libro libro : this.getLibros()) {
-            listaDeTitulos += libro.getTitulo() + "\n";
+        if (this.getLibros().isEmpty()) {
+            return "No hay títulos registrados.";
         }
 
-        return listaDeTitulos;
+        HashSet<String> titulos = new HashSet<String>();
+        for (Libro unLibro : this.getLibros()) {
+            titulos.add(unLibro.getTitulo());
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Lista de Títulos Disponibles:\n");
+        for (String unTitulo : titulos) {
+            sb.append("- ").append(unTitulo).append("\n");
+        }
+        return sb.toString();
     }
 
     public String listaDeLibros() {
-        String listaDeLibros = "";
-
-        for (int i = 0; i < this.getLibros().size(); i++) {
-            listaDeLibros += (i + 1) + ") " + this.getLibros().get(i).toString() + " || Prestado: "
-                    + (this.getLibros().get(i).prestado() ? "(Si)" : "(No)") + "\n";
+        if (this.getLibros().isEmpty()) {
+            return "No hay libros registrados.";
         }
 
-        return listaDeLibros;
+        StringBuilder listaDeLibros = new StringBuilder();
+        listaDeLibros.append("Lista de Libros:\n");
+
+        for (int i = 0; i < this.getLibros().size(); i++) {
+            listaDeLibros.append(i + 1)
+                    .append(") ")
+                    .append(this.getLibros().get(i).toString())
+                    .append(" || Prestado: ")
+                    .append(this.getLibros().get(i).prestado() ? "(Si)" : "(No)")
+                    .append("\n");
+        }
+
+        return listaDeLibros.toString();
     }
 
-    /*
-     * public String listaDeDocentesResponsables() {
-     * return "";
-     * }
-     */
+    public String listaDeDocentesResponsables() {
+        ArrayList<Docente> docentesResponsables = this.docentesResponsables();
+
+        if (docentesResponsables.isEmpty()) {
+            return "No hay docentes responsables.";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Lista de Docentes Responsables:\n");
+        for (Docente unDocente : docentesResponsables) {
+            sb.append("* ").append(unDocente.toString()).append("\n");
+        }
+        return sb.toString();
+    }
 
 }

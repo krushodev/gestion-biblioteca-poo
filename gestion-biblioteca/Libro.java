@@ -81,14 +81,23 @@ public class Libro {
     }
 
     public boolean prestado() {
-        return false;
+        Prestamo ultimoPrestamo = this.ultimoPrestamo();
+        if (ultimoPrestamo == null) {
+            return false;
+        }
+        return ultimoPrestamo.getFechaDevolucion() == null;
     }
 
-    public Prestamo prestamo() {
-        return new Prestamo();
+    public Prestamo ultimoPrestamo() {
+        if (this.getPrestamos().isEmpty()) {
+            return null;
+        }
+        return this.getPrestamos().get(this.getPrestamos().size() - 1);
     }
 
     public String toString() {
-        return "Titulo: " + titulo;
+        StringBuilder sb = new StringBuilder();
+        sb.append("Titulo: ").append(this.getTitulo());
+        return sb.toString();
     }
 }
