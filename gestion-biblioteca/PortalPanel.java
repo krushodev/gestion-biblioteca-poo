@@ -4,10 +4,29 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
+/**
+ * Panel (JPanel) principal de la aplicación.
+ * Muestra el menú de acciones (sidebar) y un área de resultados donde se
+ * visualiza la información solicitada. Maneja toda la interacción del usuario
+ * con la lógica de la biblioteca ({@link Biblioteca}).
+ *
+ * @author Jensen, Lucas
+ * @author Romero Lencinas, Santiago
+ * @author Larrazet, Tomás
+ * @author Lencinas, Mauricio
+ * @author Kruchowski, Juan Ignacio
+ * @version 1.0 (Inicial)
+ */
 public class PortalPanel extends JPanel implements ActionListener {
+    /**
+     * Referencia a la ventana principal para acceder a la lógica y cambiar de
+     * panel.
+     */
     private VentanaPrincipal ventana;
+    /** Área de texto donde se muestran los resultados de las operaciones. */
     private JTextArea areaResultados;
 
+    // Constantes de colores para la UI del portal
     private final Color colorFondoPrincipal = new Color(0x1F2937);
     private final Color colorSidebar = new Color(0x111827);
     private final Color colorAccion = new Color(0x3B82F6);
@@ -18,15 +37,22 @@ public class PortalPanel extends JPanel implements ActionListener {
     private final Color colorTextoSeccion = new Color(0xD1D5DB);
     private final Color colorPanelContenido = Color.WHITE;
     private final Color colorTextoContenido = new Color(0x111827);
-
     private final Color colorRojoBase = new Color(0xDC2626);
     private final Color colorRojoHover = new Color(0xF87171);
 
+    /**
+     * Constructor del panel del portal.
+     * Inicializa y organiza el menú lateral (sidebar) y el panel de contenido
+     * central.
+     *
+     * @param ventanaPrincipal La {@link VentanaPrincipal} que contiene este panel.
+     */
     public PortalPanel(VentanaPrincipal ventanaPrincipal) {
         this.setVentana(ventanaPrincipal);
         this.setLayout(new BorderLayout(0, 0));
         this.setBackground(this.getColorFondoPrincipal());
 
+        // --- Panel de Menú (Sidebar Izquierdo) ---
         JPanel panelMenu = new JPanel();
         panelMenu.setLayout(new BoxLayout(panelMenu, BoxLayout.Y_AXIS));
         panelMenu.setBackground(this.getColorSidebar());
@@ -40,6 +66,7 @@ public class PortalPanel extends JPanel implements ActionListener {
         tituloMenu.setBorder(new EmptyBorder(25, 15, 25, 15));
         panelMenu.add(tituloMenu);
 
+        // --- Secciones y Botones del Menú ---
         panelMenu.add(this.crearTituloSeccion("Gestión de Socios"));
         panelMenu.add(this.crearBotonMenu("Agregar Estudiante", "\uD83D\uDC68\u200D\uD83C\uDF93"));
         panelMenu.add(Box.createVerticalStrut(8));
@@ -67,8 +94,9 @@ public class PortalPanel extends JPanel implements ActionListener {
         panelMenu.add(Box.createVerticalStrut(8));
         panelMenu.add(this.crearBotonMenu("Quién tiene un Libro", "\uD83D\uDD0E"));
 
-        panelMenu.add(Box.createVerticalGlue());
+        panelMenu.add(Box.createVerticalGlue()); // Empuja el botón de logout hacia abajo
 
+        // --- Botón de Cerrar Sesión ---
         panelMenu.add(Box.createVerticalStrut(10));
         JButton btnLogout = new JButton("\u274C  Cerrar Sesión");
         btnLogout.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
@@ -89,6 +117,7 @@ public class PortalPanel extends JPanel implements ActionListener {
         btnLogout.setActionCommand("Cerrar Sesión");
         btnLogout.addActionListener(this);
 
+        // Efectos Hover del botón Logout
         btnLogout.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent evt) {
                 btnLogout.setBackground(colorRojoHover);
@@ -104,6 +133,7 @@ public class PortalPanel extends JPanel implements ActionListener {
 
         this.add(panelMenu, BorderLayout.WEST);
 
+        // --- Panel Central (Contenido y Resultados) ---
         JPanel panelCentral = new JPanel(new BorderLayout());
         panelCentral.setBackground(this.getColorFondoPrincipal());
         panelCentral.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -122,21 +152,43 @@ public class PortalPanel extends JPanel implements ActionListener {
         this.add(panelCentral, BorderLayout.CENTER);
     }
 
+    /**
+     * Establece la referencia a la ventana principal.
+     *
+     * @param p_ventana La instancia de VentanaPrincipal.
+     */
     private void setVentana(VentanaPrincipal p_ventana) {
         this.ventana = p_ventana;
     }
 
+    /**
+     * Establece el área de texto para mostrar resultados.
+     *
+     * @param p_areaResultados El componente JTextArea.
+     */
     private void setAreaResultados(JTextArea p_areaResultados) {
         this.areaResultados = p_areaResultados;
     }
 
+    /**
+     * Obtiene la referencia a la ventana principal.
+     *
+     * @return La VentanaPrincipal.
+     */
     public VentanaPrincipal getVentana() {
         return this.ventana;
     }
 
+    /**
+     * Obtiene el área de texto de resultados.
+     *
+     * @return El JTextArea.
+     */
     public JTextArea getAreaResultados() {
         return this.areaResultados;
     }
+
+    // --- Getters de Constantes de UI ---
 
     public Color getColorFondoPrincipal() {
         return this.colorFondoPrincipal;
@@ -186,6 +238,12 @@ public class PortalPanel extends JPanel implements ActionListener {
         return this.colorRojoHover;
     }
 
+    /**
+     * Método de fábrica para crear etiquetas de título de sección estandarizadas.
+     *
+     * @param texto El texto del título.
+     * @return Un JLabel formateado como título de sección.
+     */
     private JLabel crearTituloSeccion(String texto) {
         JLabel titulo = new JLabel(texto.toUpperCase());
         titulo.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
@@ -196,6 +254,14 @@ public class PortalPanel extends JPanel implements ActionListener {
         return titulo;
     }
 
+    /**
+     * Método de fábrica para crear botones de menú estandarizados.
+     * Incluye estilos, efectos hover y asignación de ActionListener.
+     *
+     * @param texto El texto del botón (y su ActionCommand).
+     * @param icono Un icono (string, ej. emoji) para el botón.
+     * @return Un JButton formateado como botón de menú.
+     */
     private JButton crearBotonMenu(String texto, String icono) {
         JButton boton = new JButton(icono + "  " + texto);
         boton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
@@ -209,7 +275,9 @@ public class PortalPanel extends JPanel implements ActionListener {
         boton.setOpaque(true);
         boton.setContentAreaFilled(true);
         boton.setBorderPainted(false);
-        boton.setActionCommand(texto);
+        boton.setActionCommand(texto); // Usa el texto como comando
+
+        // Efectos Hover del botón de menú
         boton.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent evt) {
                 boton.setBackground(colorAccion);
@@ -221,23 +289,35 @@ public class PortalPanel extends JPanel implements ActionListener {
                 boton.setForeground(colorBotonTexto);
             }
         });
+
         boton.addActionListener(this);
         boton.setMinimumSize(new Dimension(280, 56));
         boton.setMaximumSize(new Dimension(280, 56));
         return boton;
     }
 
+    /**
+     * Manejador central de eventos para todos los botones del menú.
+     * Identifica la acción solicitada por su "ActionCommand", ejecuta la lógica
+     * de negocio correspondiente (interactuando con {@link Biblioteca}) y
+     * muestra el resultado en el {@code areaResultados}.
+     *
+     * @param p_evento El evento de acción generado.
+     */
+    @Override
     public void actionPerformed(ActionEvent p_evento) {
         String comando = p_evento.getActionCommand();
         Biblioteca biblioteca = this.getVentana().getBiblioteca();
         String resultado = "";
 
         try {
+            // ---- Acción de Salida ----
             if (comando.equals("Cerrar Sesión")) {
                 this.getVentana().mostrarLogin();
-                return;
+                return; // Termina la ejecución aquí
             }
 
+            // ---- Acciones de Reportes ----
             if (comando.equals("Listar Socios")) {
                 resultado = biblioteca.listaDeSocios();
             } else if (comando.equals("Listar Libros")) {
@@ -257,11 +337,13 @@ public class PortalPanel extends JPanel implements ActionListener {
                     }
                     resultado = sb.toString();
                 }
+
+                // ---- Acciones de Gestión de Socios ----
             } else if (comando.equals("Agregar Estudiante")) {
                 String dni = JOptionPane.showInputDialog(this, "Ingrese DNI:", "Nuevo Estudiante",
                         JOptionPane.PLAIN_MESSAGE);
                 if (dni == null || dni.trim().isEmpty())
-                    return;
+                    return; // Cancelado por el usuario
                 String nombre = JOptionPane.showInputDialog(this, "Ingrese Nombre:", "Nuevo Estudiante",
                         JOptionPane.PLAIN_MESSAGE);
                 if (nombre == null || nombre.trim().isEmpty())
@@ -273,6 +355,7 @@ public class PortalPanel extends JPanel implements ActionListener {
 
                 biblioteca.nuevoSocioEstudiante(Integer.parseInt(dni), nombre, carrera);
                 resultado = "Estudiante agregado exitosamente.\n\n" + biblioteca.listaDeSocios();
+
             } else if (comando.equals("Agregar Docente")) {
                 String dni = JOptionPane.showInputDialog(this, "Ingrese DNI:", "Nuevo Docente",
                         JOptionPane.PLAIN_MESSAGE);
@@ -289,6 +372,8 @@ public class PortalPanel extends JPanel implements ActionListener {
 
                 biblioteca.nuevoSocioDocente(Integer.parseInt(dni), nombre, area);
                 resultado = "Docente agregado exitosamente.\n\n" + biblioteca.listaDeSocios();
+
+                // ---- Acciones de Gestión de Libros ----
             } else if (comando.equals("Agregar Libro")) {
                 String titulo = JOptionPane.showInputDialog(this, "Ingrese Título:", "Nuevo Libro",
                         JOptionPane.PLAIN_MESSAGE);
@@ -321,6 +406,7 @@ public class PortalPanel extends JPanel implements ActionListener {
                 if (titulo == null || titulo.trim().isEmpty())
                     return;
 
+                // Captura de fecha
                 String anioStr = JOptionPane.showInputDialog(this, "Ingrese Año (YYYY):", "Fecha de Préstamo",
                         JOptionPane.PLAIN_MESSAGE);
                 if (anioStr == null || anioStr.trim().isEmpty())
@@ -338,9 +424,10 @@ public class PortalPanel extends JPanel implements ActionListener {
                 int mes = Integer.parseInt(mesStr);
                 int dia = Integer.parseInt(diaStr);
 
-                Calendar fechaPrestamo = new GregorianCalendar(anio, mes - 1, dia);
+                Calendar fechaPrestamo = new GregorianCalendar(anio, mes - 1, dia); // Calendar usa meses 0-11
 
                 Socio socio = biblioteca.buscarSocio(Integer.parseInt(dni));
+                // Utiliza el método de búsqueda de la ventana principal
                 Libro libro = this.getVentana().buscarLibroPorTitulo(titulo);
 
                 if (socio == null)
@@ -352,11 +439,12 @@ public class PortalPanel extends JPanel implements ActionListener {
                     resultado = "Préstamo registrado exitosamente (Fecha: " + dia + "/" + mes + "/" + anio + ")\n\n"
                             + biblioteca.listaDeLibros();
                 } else {
+                    // Genera un mensaje de error detallado si el préstamo falla
                     resultado = "Error: No se pudo realizar el préstamo.\n";
                     if (libro.prestado())
                         resultado += "- El libro ya está prestado.\n";
                     if (!socio.puedePedir())
-                        resultado += "- El socio no cumple los requisitos para pedir.";
+                        resultado += "- El socio no cumple los requisitos para pedir (límite de libros o préstamos vencidos).";
                 }
 
             } else if (comando.equals("Devolver Libro")) {
@@ -369,6 +457,7 @@ public class PortalPanel extends JPanel implements ActionListener {
                 if (libro == null)
                     throw new Exception("Libro no encontrado (Título: " + titulo + ")");
 
+                // Llama a la lógica de negocio para devolver
                 biblioteca.devolverLibro(libro);
                 resultado = "Devolución registrada exitosamente.\n\n" + biblioteca.listaDeLibros();
 
@@ -386,14 +475,18 @@ public class PortalPanel extends JPanel implements ActionListener {
                         + biblioteca.quienTieneElLibro(libro);
             }
 
+            // ---- Muestra el Resultado Exitoso ----
             this.getAreaResultados().setForeground(this.getColorTextoContenido());
             this.getAreaResultados().setText(resultado);
 
         } catch (Exception ex) {
+            // ---- Manejo de Excepciones (ej. ParseException, LibroNoPrestadoException)
+            // ----
             this.getAreaResultados().setForeground(Color.RED);
             this.getAreaResultados().setText("Error: " + ex.getMessage());
         }
 
+        // Asegura que el scroll del área de resultados vuelva al inicio
         this.getAreaResultados().setCaretPosition(0);
     }
 }
