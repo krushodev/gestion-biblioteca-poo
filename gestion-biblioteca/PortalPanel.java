@@ -5,7 +5,6 @@ import java.awt.event.*;
 import java.util.*;
 
 public class PortalPanel extends JPanel implements ActionListener {
-
     private VentanaPrincipal ventana;
     private JTextArea areaResultados;
 
@@ -26,47 +25,47 @@ public class PortalPanel extends JPanel implements ActionListener {
     public PortalPanel(VentanaPrincipal ventanaPrincipal) {
         this.setVentana(ventanaPrincipal);
         this.setLayout(new BorderLayout(0, 0));
-        this.setBackground(colorFondoPrincipal);
+        this.setBackground(this.getColorFondoPrincipal());
 
         JPanel panelMenu = new JPanel();
         panelMenu.setLayout(new BoxLayout(panelMenu, BoxLayout.Y_AXIS));
-        panelMenu.setBackground(colorSidebar);
-        panelMenu.setBorder(new MatteBorder(0, 0, 0, 1, colorSeparador));
+        panelMenu.setBackground(this.getColorSidebar());
+        panelMenu.setBorder(new MatteBorder(0, 0, 0, 1, this.getColorSeparador()));
         panelMenu.setPreferredSize(new Dimension(320, 0));
 
         JLabel tituloMenu = new JLabel("Biblioteca");
         tituloMenu.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
-        tituloMenu.setForeground(colorTextoTitulo);
+        tituloMenu.setForeground(this.getColorTextoTitulo());
         tituloMenu.setAlignmentX(Component.CENTER_ALIGNMENT);
         tituloMenu.setBorder(new EmptyBorder(25, 15, 25, 15));
         panelMenu.add(tituloMenu);
 
-        panelMenu.add(crearTituloSeccion("Gestión de Socios"));
-        panelMenu.add(crearBotonMenu("Agregar Estudiante", "\uD83D\uDC68\u200D\uD83C\uDF93"));
+        panelMenu.add(this.crearTituloSeccion("Gestión de Socios"));
+        panelMenu.add(this.crearBotonMenu("Agregar Estudiante", "\uD83D\uDC68\u200D\uD83C\uDF93"));
         panelMenu.add(Box.createVerticalStrut(8));
-        panelMenu.add(crearBotonMenu("Agregar Docente", "\uD83D\uDC68\u200D\uD83C\uDFEB"));
+        panelMenu.add(this.crearBotonMenu("Agregar Docente", "\uD83D\uDC68\u200D\uD83C\uDFEB"));
         panelMenu.add(Box.createVerticalStrut(20));
 
-        panelMenu.add(crearTituloSeccion("Gestión de Libros"));
-        panelMenu.add(crearBotonMenu("Agregar Libro", "\u2795"));
+        panelMenu.add(this.crearTituloSeccion("Gestión de Libros"));
+        panelMenu.add(this.crearBotonMenu("Agregar Libro", "\u2795"));
         panelMenu.add(Box.createVerticalStrut(8));
-        panelMenu.add(crearBotonMenu("Prestar Libro", "\uD83D\uDCD7"));
+        panelMenu.add(this.crearBotonMenu("Prestar Libro", "\uD83D\uDCD7"));
         panelMenu.add(Box.createVerticalStrut(8));
-        panelMenu.add(crearBotonMenu("Devolver Libro", "\uD83D\uDCD9"));
+        panelMenu.add(this.crearBotonMenu("Devolver Libro", "\uD83D\uDCD9"));
         panelMenu.add(Box.createVerticalStrut(20));
 
-        panelMenu.add(crearTituloSeccion("Reportes"));
-        panelMenu.add(crearBotonMenu("Listar Socios", "\uD83D\uDCD1"));
+        panelMenu.add(this.crearTituloSeccion("Reportes"));
+        panelMenu.add(this.crearBotonMenu("Listar Socios", "\uD83D\uDCD1"));
         panelMenu.add(Box.createVerticalStrut(8));
-        panelMenu.add(crearBotonMenu("Listar Libros", "\uD83D\uDCDA"));
+        panelMenu.add(this.crearBotonMenu("Listar Libros", "\uD83D\uDCDA"));
         panelMenu.add(Box.createVerticalStrut(8));
-        panelMenu.add(crearBotonMenu("Listar Títulos", "\uD83D\uDCCB"));
+        panelMenu.add(this.crearBotonMenu("Listar Títulos", "\uD83D\uDCCB"));
         panelMenu.add(Box.createVerticalStrut(8));
-        panelMenu.add(crearBotonMenu("Ver Docentes Responsables", "\uD83D\uDC65"));
+        panelMenu.add(this.crearBotonMenu("Ver Docentes Responsables", "\uD83D\uDC65"));
         panelMenu.add(Box.createVerticalStrut(8));
-        panelMenu.add(crearBotonMenu("Ver Préstamos Vencidos", "\u23F0"));
+        panelMenu.add(this.crearBotonMenu("Ver Préstamos Vencidos", "\u23F0"));
         panelMenu.add(Box.createVerticalStrut(8));
-        panelMenu.add(crearBotonMenu("Quién tiene un Libro", "\uD83D\uDD0E"));
+        panelMenu.add(this.crearBotonMenu("Quién tiene un Libro", "\uD83D\uDD0E"));
 
         panelMenu.add(Box.createVerticalGlue());
 
@@ -74,7 +73,7 @@ public class PortalPanel extends JPanel implements ActionListener {
         JButton btnLogout = new JButton("\u274C  Cerrar Sesión");
         btnLogout.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
         btnLogout.setForeground(Color.WHITE);
-        btnLogout.setBackground(colorRojoBase);
+        btnLogout.setBackground(this.getColorRojoBase());
 
         btnLogout.setBorder(new EmptyBorder(13, 25, 13, 25));
         btnLogout.setHorizontalAlignment(SwingConstants.LEFT);
@@ -106,21 +105,85 @@ public class PortalPanel extends JPanel implements ActionListener {
         this.add(panelMenu, BorderLayout.WEST);
 
         JPanel panelCentral = new JPanel(new BorderLayout());
-        panelCentral.setBackground(colorFondoPrincipal);
+        panelCentral.setBackground(this.getColorFondoPrincipal());
         panelCentral.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         this.setAreaResultados(new JTextArea("¡Bienvenido al sistema!\nSeleccione una opción del menú."));
         this.getAreaResultados().setEditable(false);
         this.getAreaResultados().setFont(new Font("Monospaced", Font.PLAIN, 18));
         this.getAreaResultados().setMargin(new Insets(15, 15, 15, 15));
-        this.getAreaResultados().setBackground(this.colorPanelContenido);
-        this.getAreaResultados().setForeground(this.colorTextoContenido);
+        this.getAreaResultados().setBackground(this.getColorPanelContenido());
+        this.getAreaResultados().setForeground(this.getColorTextoContenido());
 
         JScrollPane scrollArea = new JScrollPane(this.getAreaResultados());
-        scrollArea.setBorder(BorderFactory.createLineBorder(this.colorSeparador));
+        scrollArea.setBorder(BorderFactory.createLineBorder(this.getColorSeparador()));
 
         panelCentral.add(scrollArea, BorderLayout.CENTER);
         this.add(panelCentral, BorderLayout.CENTER);
+    }
+
+    private void setVentana(VentanaPrincipal p_ventana) {
+        this.ventana = p_ventana;
+    }
+
+    private void setAreaResultados(JTextArea p_areaResultados) {
+        this.areaResultados = p_areaResultados;
+    }
+
+    public VentanaPrincipal getVentana() {
+        return this.ventana;
+    }
+
+    public JTextArea getAreaResultados() {
+        return this.areaResultados;
+    }
+
+    public Color getColorFondoPrincipal() {
+        return this.colorFondoPrincipal;
+    }
+
+    public Color getColorSidebar() {
+        return this.colorSidebar;
+    }
+
+    public Color getColorAccion() {
+        return this.colorAccion;
+    }
+
+    public Color getColorSeparador() {
+        return this.colorSeparador;
+    }
+
+    public Color getColorBoton() {
+        return this.colorBoton;
+    }
+
+    public Color getColorBotonTexto() {
+        return this.colorBotonTexto;
+    }
+
+    public Color getColorTextoTitulo() {
+        return this.colorTextoTitulo;
+    }
+
+    public Color getColorTextoSeccion() {
+        return this.colorTextoSeccion;
+    }
+
+    public Color getColorPanelContenido() {
+        return this.colorPanelContenido;
+    }
+
+    public Color getColorTextoContenido() {
+        return this.colorTextoContenido;
+    }
+
+    public Color getColorRojoBase() {
+        return this.colorRojoBase;
+    }
+
+    public Color getColorRojoHover() {
+        return this.colorRojoHover;
     }
 
     private JLabel crearTituloSeccion(String texto) {
@@ -136,8 +199,8 @@ public class PortalPanel extends JPanel implements ActionListener {
     private JButton crearBotonMenu(String texto, String icono) {
         JButton boton = new JButton(icono + "  " + texto);
         boton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
-        boton.setForeground(colorBotonTexto);
-        boton.setBackground(colorBoton);
+        boton.setForeground(this.getColorBotonTexto());
+        boton.setBackground(this.getColorBoton());
         boton.setBorder(new EmptyBorder(13, 25, 13, 25));
         boton.setHorizontalAlignment(SwingConstants.LEFT);
         boton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -164,30 +227,14 @@ public class PortalPanel extends JPanel implements ActionListener {
         return boton;
     }
 
-    private void setVentana(VentanaPrincipal p_ventana) {
-        this.ventana = p_ventana;
-    }
-
-    private void setAreaResultados(JTextArea p_areaResultados) {
-        this.areaResultados = p_areaResultados;
-    }
-
-    public VentanaPrincipal getVentana() {
-        return this.ventana;
-    }
-
-    public JTextArea getAreaResultados() {
-        return this.areaResultados;
-    }
-
-    public void actionPerformed(ActionEvent event) {
-        String comando = event.getActionCommand();
-        Biblioteca biblioteca = ventana.getBiblioteca();
+    public void actionPerformed(ActionEvent p_evento) {
+        String comando = p_evento.getActionCommand();
+        Biblioteca biblioteca = this.getVentana().getBiblioteca();
         String resultado = "";
 
         try {
             if (comando.equals("Cerrar Sesión")) {
-                ventana.mostrarLogin();
+                this.getVentana().mostrarLogin();
                 return;
             }
 
@@ -205,8 +252,8 @@ public class PortalPanel extends JPanel implements ActionListener {
                     resultado = "No hay préstamos vencidos a la fecha.";
                 } else {
                     StringBuilder sb = new StringBuilder("--- PRÉSTAMOS VENCIDOS ---\n\n");
-                    for (Prestamo p : vencidos) {
-                        sb.append(p.toString()).append("\n---------------------------------\n");
+                    for (Prestamo unPrestamo : vencidos) {
+                        sb.append(unPrestamo.toString()).append("\n---------------------------------\n");
                     }
                     resultado = sb.toString();
                 }
@@ -294,7 +341,7 @@ public class PortalPanel extends JPanel implements ActionListener {
                 Calendar fechaPrestamo = new GregorianCalendar(anio, mes - 1, dia);
 
                 Socio socio = biblioteca.buscarSocio(Integer.parseInt(dni));
-                Libro libro = ventana.buscarLibroPorTitulo(titulo);
+                Libro libro = this.getVentana().buscarLibroPorTitulo(titulo);
 
                 if (socio == null)
                     throw new Exception("Socio no encontrado (DNI: " + dni + ")");
@@ -318,7 +365,7 @@ public class PortalPanel extends JPanel implements ActionListener {
                 if (titulo == null || titulo.trim().isEmpty())
                     return;
 
-                Libro libro = ventana.buscarLibroPorTitulo(titulo);
+                Libro libro = this.getVentana().buscarLibroPorTitulo(titulo);
                 if (libro == null)
                     throw new Exception("Libro no encontrado (Título: " + titulo + ")");
 
@@ -331,7 +378,7 @@ public class PortalPanel extends JPanel implements ActionListener {
                 if (titulo == null || titulo.trim().isEmpty())
                     return;
 
-                Libro libro = ventana.buscarLibroPorTitulo(titulo);
+                Libro libro = this.getVentana().buscarLibroPorTitulo(titulo);
                 if (libro == null)
                     throw new Exception("Libro no encontrado (Título: " + titulo + ")");
 
@@ -339,14 +386,14 @@ public class PortalPanel extends JPanel implements ActionListener {
                         + biblioteca.quienTieneElLibro(libro);
             }
 
-            areaResultados.setForeground(colorTextoContenido);
-            areaResultados.setText(resultado);
+            this.getAreaResultados().setForeground(this.getColorTextoContenido());
+            this.getAreaResultados().setText(resultado);
 
         } catch (Exception ex) {
-            areaResultados.setForeground(Color.RED);
-            areaResultados.setText("Error: " + ex.getMessage());
+            this.getAreaResultados().setForeground(Color.RED);
+            this.getAreaResultados().setText("Error: " + ex.getMessage());
         }
 
-        areaResultados.setCaretPosition(0);
+        this.getAreaResultados().setCaretPosition(0);
     }
 }
